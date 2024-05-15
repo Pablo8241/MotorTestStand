@@ -1,3 +1,5 @@
+//PASSWORD IS 6969
+
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
