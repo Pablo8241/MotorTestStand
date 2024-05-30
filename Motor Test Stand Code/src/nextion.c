@@ -45,6 +45,15 @@ void nextion_init() //!!!
 	sei(); //Enable interrupts
 	_delay_ms(1000);
 
+	// Page 3 stuff
+	nextion_write_value(3, "bt0", 1);
+	nextion_write_value(3, "h0", 0);
+	nextion_write_value(3, "n0", 0);
+  	printf("page%d.n%d.pco=%ld%c%c%c", 3, 0, 65535L, 0xFF,0xFF,0xFF);
+
+	// Page 2 stuff
+	nextion_write_value(2, "bt0", 0);
+
 	//printf("page 0%c%c%c",255,255,255);
 }
 
@@ -87,9 +96,9 @@ void nextion_write_value(int page_number, char* component_name, int value)
 }
 
 // Write text to a component on the display
-void nextion_write_text(int page_number, char* component_name, char* text) //!!! Does not work
+void nextion_write_text(char* component_name, char* text) 
 {
-  printf("page%d.%s.txt=%s%c%c%c", page_number, component_name, text, 0xFF,0xFF,0xFF);
+  printf("%s.txt=\"%s\"%c%c%c", component_name, text, 0xFF,0xFF,0xFF);
 }
 
 // Write value to waveform channel on the display
