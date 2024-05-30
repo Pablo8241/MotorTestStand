@@ -126,7 +126,7 @@ int main(void)
   optocoupler_init();
   GLS_init();
   timer0_init();
-  //ADC_init();
+  ADC_init();
 
   printf("page 0%c%c%c",0xFF,0xFF,0xFF); // Displays page0 on the nextion display.
   nextionPage0();
@@ -252,8 +252,8 @@ void nextionPage1() // Setup Guide
   }
 
   // Calcualte current and voltage
-  // nextion_write_value(1, "x0", ((double)v_ref * 100 * (double)read_main_voltage() * 4 / 1024)); // Prints voltage
-  // nextion_write_value(1, "x1", ((1.1 * 1000 * (double)read_current_adc() / 1024) / shunt)); // Prints current
+  nextion_write_value(1, "x0", ((double)v_ref * 100 * (double)read_main_voltage() * 4 / 1024)); // Prints voltage
+  nextion_write_value(1, "x1", ((1.1 * 1000 * (double)read_current_adc() / 1024) / shunt)); // Prints current
 
   // Code runnign while on page
   while(1) 
@@ -429,18 +429,18 @@ void nextionPage5() // Results
 
 void automaticTest() // Gathers and displays information from the optocoupler and loadcell
 {
-  // // constant test
-  // GLS_control(20); // Open circuit
-  // delay_milliseconds(2000);
+  // constant test
+  GLS_control(20); // Open circuit
+  delay_milliseconds(2000);
 
-  // motor(1); // Starts motor
-  // for(int i = 0; i < 100; i++) // Test wil run for 100*20 ms = 2 seconds
-  // {
-  //   RPM_constant_test[i] = RPMReadValue();
-  //   delay_milliseconds(20); 
-  // }
-  // motor(0); // Turns off motor
-  // delay_milliseconds(2000);
+  motor(1); // Starts motor
+  for(int i = 0; i < 100; i++) // Test wil run for 100*20 ms = 2 seconds
+  {
+    RPM_constant_test[i] = RPMReadValue();
+    delay_milliseconds(20); 
+  }
+  motor(0); // Turns off motor
+  delay_milliseconds(2000);
 
 
   // Load cell setup 
@@ -482,14 +482,14 @@ void automaticTest() // Gathers and displays information from the optocoupler an
     // Reads input values
     data[a].torque = (int)(HX711_get_mean_units(HX711_times)); // Torque reading (Loadcell)
     data[a].RPM = RPMReadValue(); // gives the RPM value; // RPM reading (Optocoupler)
-    // data[a].mcc_voltage = ((double)v_ref * 100 * (double)read_main_voltage() * 4 / 1024); // calculate the voltage V;
-    // data[a].mcc_current = ((1.1 * 1000 * (double)read_current_adc() / 1024) / shunt); // calculate the current mA
+    data[a].mcc_voltage = ((double)v_ref * 100 * (double)read_main_voltage() * 4 / 1024); // calculate the voltage V;
+    data[a].mcc_current = ((1.1 * 1000 * (double)read_current_adc() / 1024) / shunt); // calculate the current mA
 
     // Writes digital values to Display
     nextion_write_value(4, "x1", (int)(HX711_get_mean_units(HX711_times))); // Writes digital value of torque
     nextion_write_value(4, "x0", (int)(data[a].RPM)); // Writes digital value of RPM
-    // nextion_write_value(4, "x2", (int)(data[a].mcc_voltage)); // Writes digital value of voltage
-    // nextion_write_value(4, "x3", (int)(data[a].mcc_current)); // Writes digital value of current
+    nextion_write_value(4, "x2", (int)(data[a].mcc_voltage)); // Writes digital value of voltage
+    nextion_write_value(4, "x3", (int)(data[a].mcc_current)); // Writes digital value of current
 
     if(data[a].torque < 0) {data[a].torque = 0;} // Makes any negative value equals to 0
     if(data[a].torque > temp_max_torque) {temp_max_torque = data[a].torque;}
