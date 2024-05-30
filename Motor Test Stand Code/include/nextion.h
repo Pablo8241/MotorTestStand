@@ -47,7 +47,7 @@ void nextion_resume_execution();
 void nextion_draw_line(int x_last, int y_last, int x_new, int y_new, char* line_color);
 
 void nextion_write_value(int page_number, char* component_name, int value);
-void nextion_write_text(int page_number, char* component_name, char* text);
+void nextion_write_text(char* component_name, char* text);
 void nextion_waveform_write_value(int Component_id, int channel_number, int value);
 void nextion_change_data_scaling(int page_number, char* component_name, int value);
 
