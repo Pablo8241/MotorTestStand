@@ -1,10 +1,10 @@
 /*
  * HelloWorld.c
  *
- * Componenet IDs 
+ * Component IDs 
  *  - number: "n"
  *  - float: "x"
- *  - Progess Bar: "j"
+ *  - Progress Bar: "j"
  *  - Gauge: "z"
  *  - Slider: "h"
  * 
@@ -24,7 +24,7 @@
 #ifndef BAUD
 #define BAUD 9600
 #endif
-#define NUMBER_STRING 1001 // 1001 is just a random number. The vairable is used to check if the number input in the number array is a string.
+#define NUMBER_STRING 1001 // 1001 is just a random number. The variable is used to check if the number input in the number array is a string.
 
 //-------GLOBAL-VARIABLES------
 volatile unsigned char commandbuffer[8] = {0};
@@ -32,7 +32,7 @@ volatile unsigned char bufferIndex = 0;
 volatile unsigned char commandStarted = 0;
 volatile unsigned char commandComplete = 0;
 volatile unsigned char endflagsRead = 0;
-volatile unsigned char waitForInterupts = 0; 
+volatile unsigned char waitForInterrupts = 0; 
 
 //################################________Commands________############################################
 
@@ -49,7 +49,7 @@ void nextion_init() //!!!
 	nextion_write_value(3, "bt0", 1);
 	nextion_write_value(3, "h0", 0);
 	nextion_write_value(3, "n0", 0);
-  	printf("page%d.n%d.pco=%ld%c%c%c", 3, 0, 65535L, 0xFF,0xFF,0xFF);
+  printf("page%d.n%d.pco=%ld%c%c%c", 3, 0, 65535L, 0xFF,0xFF,0xFF);
 
 	// Page 2 stuff
 	nextion_write_value(2, "bt0", 0);
@@ -123,11 +123,11 @@ uint32_t nextion_read_value(int page_number, char* component_name)
 	// Gets value from component 
 	printf("get page%d.%s.val%c%c%c", page_number, component_name, 0xFF,0xFF,0xFF);
 	
-	waitForInterupts = 1; 
-	while(waitForInterupts); // Waits for the for the display to stop sending data over USART
+	waitForInterrupts = 1; 
+	while(waitForInterrupts); // Waits for the for the display to stop sending data over USART
 	
 	// Checks if the first package/string stored in the array is the "indicator" 0x71 and that the last 3 stings are 0xFF, which is used to end a command. 
-	if(commandbuffer[0] == (int)0x71 && commandbuffer[5] == (int)0xFF && commandbuffer[6] == (int)0xFF && commandbuffer[7] == (int)0xFF)//Just to make compleatly sure i check if first is a number and we end with 0xFF 3 times. This is a complete number return
+	if(commandbuffer[0] == (int)0x71 && commandbuffer[5] == (int)0xFF && commandbuffer[6] == (int)0xFF && commandbuffer[7] == (int)0xFF)//Just to make completely sure i check if first is a number and we end with 0xFF 3 times. This is a complete number return
 	{
 		readValue = commandbuffer[1] | (commandbuffer[2] << 8) | (commandbuffer[3] << 16) | (commandbuffer[4] << 24); // I use left shifting "<<" and bitwise or "|" To combine the 4 packages into one 32 bit string that is then put into the variable "readvalue"
 	}
@@ -162,7 +162,7 @@ ISR(USART_RX_vect)
 			endflagsRead = 0;
 			commandStarted = 0;
 			bufferIndex = 0;
-			waitForInterupts = 0;
+			waitForInterrupts = 0;
 		}
 	}
 	
