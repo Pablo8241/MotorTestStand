@@ -4,10 +4,10 @@
  *  Created on: April 23, 2024
  *      Author: Tobias
  * 
- * Componenet IDs: 
+ * Component IDs: 
  *  - number: "n"
  *  - float: "x"
- *  - Progess Bar: "j"
+ *  - Progress Bar: "j"
  *  - Gauge: "z"
  *  - Slider: "h"
  *  - Hotspot: "m"
@@ -54,3 +54,4 @@ void nextion_change_data_scaling(int page_number, char* component_name, int valu
 uint32_t nextion_read_value(int page_number, char* component_name);
 
 #endif // Is to know the scope of #ifndef i.e end of #ifndef.
+
