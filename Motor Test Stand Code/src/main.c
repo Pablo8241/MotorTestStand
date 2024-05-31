@@ -126,7 +126,7 @@ int main(void)
   optocoupler_init();
   GLS_init();
   timer0_init();
-  // ADC_init();
+  ADC_init();
 
   printf("page 0%c%c%c",0xFF,0xFF,0xFF); // Displays page0 on the nextion display.
   nextionPage0();
