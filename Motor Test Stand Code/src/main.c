@@ -51,7 +51,7 @@ typedef struct
 //----- MOTOR CONTROL CIRCUIT DEFINITIONS -----//
 #define MCC_voltage_adc_pin PC0
 #define MCC_current_adc_pin PC1
-#define MCC_motor_enble_pin PC4
+#define MCC_motor_enable_pin PC4
 
 //--------- TORQUE METER DEFINITIONS ----------//
 #define torque_CLK_pin PC2
@@ -126,7 +126,7 @@ int main(void)
   optocoupler_init();
   GLS_init();
   timer0_init();
-  ADC_init();
+  // ADC_init();
 
   printf("page 0%c%c%c",0xFF,0xFF,0xFF); // Displays page0 on the nextion display.
   nextionPage0();
@@ -140,7 +140,7 @@ int main(void)
 
 ISR(TIMER1_CAPT_vect) // Timer/Counter1 Capture Event
 { 
-  // Event to be executed when PCINT0 occurrs. It measures the time between each interrupt.
+  // Event to be executed when PCINT0 occurs. It measures the time between each interrupt.
   if (overflows > 0 || ICR1 > 100){ // with fail-safe
     changes++;
     counter = ICR1 + (overflows*65535); // Reads the amount of cycles passed since last interrupt
@@ -166,22 +166,22 @@ void nextion_touch_event_detected()
 	{
 		switch (commandbuffer[1]) //Checks page number
 		{
-		case 0: // Touch event happend on page 0
+		case 0: // Touch event happened on page 0
       nextionPage0(); 
       break;
-    case 1: // Touch event happend on page 1
+    case 1: // Touch event happened on page 1
       nextionPage1(); 
       break;
-    case 2: // Touch event happend on page 2
+    case 2: // Touch event happened on page 2
       nextionPage2(); 
       break;
-    case 3: // Touch event happend on page 3
+    case 3: // Touch event happened on page 3
       nextionPage3();
       break;
-    case 4: // Touch event happend on page 4
+    case 4: // Touch event happened on page 4
       nextionPage4();
       break;
-    case 5: // Touch event happend on page 5
+    case 5: // Touch event happened on page 5
       nextionPage5();
       break;
 		}
@@ -192,7 +192,7 @@ void nextion_touch_event_detected()
 void nextionPage0() // Keypad 
 {
 
-  // Code for when touch evnt on page occurs
+  // Code for when touch event on page occurs
   if(commandComplete)
   {
     commandComplete = 0;
@@ -208,6 +208,7 @@ void nextionPage0() // Keypad
     {
     case 11: // delete button
       numb_index--; 
+
       printf("page%d.n%d.pco=%ld%c%c%c", 0, numb_index, 65535L, 0xFF,0xFF,0xFF);
       printf("page%d.n%d.val=%d%c%c%c", 0, numb_index, 0, 0xFF,0xFF,0xFF);
       break;
@@ -222,17 +223,17 @@ void nextionPage0() // Keypad
     }
   }
 
-  // Code runnign while on page
+  // Code running while on page
   while(1) 
   {
-    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occured. If yes runs function
+    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occurred. If yes runs function
   }
 }
 
 void nextionPage1() // Setup Guide
 {
   
-  // Code for when touch evnt on page occurs
+  // Code for when touch event on page occurs
   if(commandComplete)
   {
     commandComplete = 0;
@@ -251,26 +252,26 @@ void nextionPage1() // Setup Guide
     }
   }
 
-  // Calcualte current and voltage
+  // Calculate current and voltage
   nextion_write_value(1, "x0", ((double)v_ref * 100 * (double)read_main_voltage() * 4 / 1024)); // Prints voltage
   nextion_write_value(1, "x1", ((1.1 * 1000 * (double)read_current_adc() / 1024) / shunt)); // Prints current
 
-  // Code runnign while on page
+  // Code running while on page
   while(1) 
   {
-    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occured. If yes runs function
+    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occurred. If yes runs function
   }
 }
 
 void nextionPage2() // Manual Test
 {
 
-  // Code for when touch evnt on page occurs
+  // Code for when touch event on page occurs
   if(commandComplete)
   {
     commandComplete = 0;
 
-    // Code for when touch evnt on page occurs
+    // Code for when touch event on page occurs
     switch (commandbuffer[2]) //Checks component id
     {
     case 3: // Back (Button)
@@ -288,10 +289,10 @@ void nextionPage2() // Manual Test
     // return;
   }
 
-  // Code runnign while on page
+  // Code running while on page
   while(1) 
   {
-    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occured. If yes runs function
+    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occurred. If yes runs function
   }
   
 }
@@ -299,7 +300,7 @@ void nextionPage2() // Manual Test
 void nextionPage3() // Manually Control Lightbulbs
 {
   
-  // Code for when touch evnt on page occurs
+  // Code for when touch event on page occurs
   if(commandComplete)
   {
     commandComplete = 0;
@@ -342,22 +343,22 @@ void nextionPage3() // Manually Control Lightbulbs
 
   }
 
-  // Code runnign while on page
+  // Code running while on page
   while(1) 
   {
-    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occured. If yes runs function
+    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occurred. If yes runs function
   }
 }
 
 void nextionPage4() // Automatic Test
 {
 
-  // Code for when touch evnt on page occurs
+  // Code for when touch event on page occurs
   if(commandComplete)
   {
     commandComplete = 0;
 
-    // Code for when touch evnt on page occurs
+    // Code for when touch event on page occurs
     switch (commandbuffer[2]) //Checks component id
     {
     case 10: // Show results
@@ -378,10 +379,10 @@ void nextionPage4() // Automatic Test
     }
   }
 
-  // Code runnign while on page
+  // Code running while on page
   while(1) 
   {
-    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occured. If yes runs function
+    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occurred. If yes runs function
   }
   
 }
@@ -389,7 +390,7 @@ void nextionPage4() // Automatic Test
 void nextionPage5() // Results
 { 
   
-  // Code for when touch evnt on page occurs
+  // Code for when touch event on page occurs
   if(commandComplete)
   {
     commandComplete = 0;
@@ -419,10 +420,10 @@ void nextionPage5() // Results
   // Calculate and display constants 
   motor_constants(RPM_torque_a, RPM_torque_b, current_torque_a);
 
-  // Code runnign while on page
+  // Code running while on page
   while(1) 
   {
-    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occured. If yes runs function
+    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occurred. If yes runs function
   }
   
 }
@@ -456,12 +457,12 @@ void automaticTest() // Gathers and displays information from the optocoupler an
   int torque_x_last = 0, torque_y_last = 480;
   int torque_y_new_new_new = 0;
   int torque_y_new_new = 0;
-  float torque_old_procentage = 0;
+  float torque_old_percentage = 0;
   
   int RPM_x_last = 0, RPM_y_last = 480;
   int RPM_y_new_new_new = 0;
   int RPM_y_new_new = 0;
-  float RPM_old_procentage = 0;
+  float RPM_old_percentage = 0;
 
   int torque_old_min = 0, RPM_old_min = 0;
   uint16_t torque_old_max = eeprom_read_word((uint16_t *)MAX_TORQUE_ADDRESS); // Reads previous max torque from eeprom
@@ -476,7 +477,7 @@ void automaticTest() // Gathers and displays information from the optocoupler an
   motor(1); // Turns on motor
   for (int a = 0; a < ARRAY_SIZE; a++)
   { 
-    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occured. If yes runs function
+    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occurred. If yes runs function
 
     // Reads input values
     data[a].torque = (int)(HX711_get_mean_units(HX711_times)*1000); // Torque reading (Loadcell)
@@ -484,7 +485,6 @@ void automaticTest() // Gathers and displays information from the optocoupler an
     data[a].mcc_voltage = ((double)v_ref * 100 * (double)read_main_voltage() * 4 / 1024); // calculate the voltage V;
     data[a].mcc_current = ((1.1 * 1000 * (double)read_current_adc() / 1024) / shunt); // calculate the current mA
     
-
     // Writes digital values to Display
     nextion_write_value(4, "x1", (int)(data[a].torque)); // Writes digital value of torque
     nextion_write_value(4, "x0", (int)(data[a].RPM)); // Writes digital value of RPM
@@ -500,8 +500,8 @@ void automaticTest() // Gathers and displays information from the optocoupler an
     //****************************************************
     // Graphs values using line segments
     // Torque
-    torque_old_procentage = ((float)data[a].torque - torque_old_min) / (torque_old_max - torque_old_min);
-    torque_y_new_new = (((new_max - new_min) * torque_old_procentage) + new_min);
+    torque_old_percentage = ((float)data[a].torque - torque_old_min) / (torque_old_max - torque_old_min);
+    torque_y_new_new = (((new_max - new_min) * torque_old_percentage) + new_min);
     torque_y_new_new_new = 480-torque_y_new_new;
 
     nextion_draw_line(torque_x_last, torque_y_last, 6*a, torque_y_new_new_new, "BLUE");
@@ -510,8 +510,8 @@ void automaticTest() // Gathers and displays information from the optocoupler an
     torque_y_last = torque_y_new_new_new;
     
     // RPM
-    RPM_old_procentage = ((float)data[a].RPM - RPM_old_min) / (RPM_old_max - RPM_old_min);
-    RPM_y_new_new = (((new_max - new_min) * RPM_old_procentage) + new_min);
+    RPM_old_percentage = ((float)data[a].RPM - RPM_old_min) / (RPM_old_max - RPM_old_min);
+    RPM_y_new_new = (((new_max - new_min) * RPM_old_percentage) + new_min);
     RPM_y_new_new_new = 480-RPM_y_new_new;
 
     nextion_draw_line(RPM_x_last, RPM_y_last, 6*a, RPM_y_new_new_new, "RED");
@@ -537,7 +537,7 @@ void automaticTest() // Gathers and displays information from the optocoupler an
   motor(0); // Turns off motor
   eeprom_write_word((uint16_t *)MAX_TORQUE_ADDRESS, temp_max_torque); // saves the max torque reading in eeprom
   eeprom_write_word((uint16_t *)MAX_RPM_ADDRESS, temp_max_RPM); // saves the max RPM reading in eeprom
-  printf("page%d.b%d.pco=%ld%c%c%c", 4, 3, 65535, 0xFF,0xFF,0xFF); // Makes the results button viasble (changes font color to white)
+  printf("page%d.b%d.pco=%ld%c%c%c", 4, 3, 65535, 0xFF,0xFF,0xFF); // Makes the results button visible (changes font color to white)
 
 }
 
@@ -550,7 +550,7 @@ void manualTest() // Gathers and displays information from the optocoupler and l
 
   while(state_test)
   { 
-    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occured. If yes runs function
+    if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occurred. If yes runs function
     
     // Reads input values
     torque_temp = (HX711_get_mean_units(HX711_times)*1000);
