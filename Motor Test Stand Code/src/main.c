@@ -51,7 +51,7 @@ typedef struct
 //----- MOTOR CONTROL CIRCUIT DEFINITIONS -----//
 #define MCC_voltage_adc_pin PC0
 #define MCC_current_adc_pin PC1
-#define MCC_motor_enable_pin PC4
+#define MCC_motor_enble_pin PC4
 
 //--------- TORQUE METER DEFINITIONS ----------//
 #define torque_CLK_pin PC2
