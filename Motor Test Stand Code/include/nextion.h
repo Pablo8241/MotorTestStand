@@ -39,19 +39,26 @@ extern volatile unsigned char commandbuffer[8];
 extern volatile unsigned char commandComplete;
 
 //function headers 
-void nextion_init();
-void nextion_display_page(int page_number);
-void nextion_waveform_clear_channel(int Component_id);
-void nextion_stop_execution(); 
-void nextion_resume_execution();
-void nextion_draw_line(int x_last, int y_last, int x_new, int y_new, char* line_color);
+//################################________Commands________############################################
 
-void nextion_write_value(int page_number, char* component_name, int value);
-void nextion_write_text(char* component_name, char* text);
-void nextion_waveform_write_value(int Component_id, int channel_number, int value);
-void nextion_change_data_scaling(int page_number, char* component_name, int value);
+void nextion_init(); // Initialize communication with the Nxtion display 
+void nextion_display_page(int page_number); // Display page on the nextion display
+void nextion_waveform_clear_channel(int Component_id); // Clear data waveform channel on the display
+void nextion_stop_execution(); // Stop execution of instructions received from Serial (USART)
+void nextion_resume_execution(); // Resume execution of instructions received from Serial (USART)
+void nextion_draw_line(int x_last, int y_last, int x_new, int y_new, char* line_color); // Draw line between two points on the display
 
-uint32_t nextion_read_value(int page_number, char* component_name);
+//################################________Writing_Data________############################################
+
+void nextion_write_value(int page_number, char* component_name, int value); // Write value to a component on the display
+void nextion_write_text(char* component_name, char* text); // Write text to a component on the display
+void nextion_waveform_write_value(int Component_id, int channel_number, int value); // Write value to waveform channel on the display
+void nextion_change_data_scaling(int page_number, char* component_name, int value); // Change data scaling of component (waveform)
+
+//################################________Reading_Data________############################################
+
+uint32_t nextion_read_value(int page_number, char* component_name); // Read value from a component on the display
+
 
 #endif // Is to know the scope of #ifndef i.e end of #ifndef.
 
