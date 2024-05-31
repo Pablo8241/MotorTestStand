@@ -1,12 +1,31 @@
 /*
- * HelloWorld.c
+ * nextion.c
  *
- * Component IDs 
+ * Component IDs: 
  *  - number: "n"
  *  - float: "x"
  *  - Progress Bar: "j"
  *  - Gauge: "z"
  *  - Slider: "h"
+ *  - Hotspot: "m"
+ *  - Button: "b"
+ *  - Waveform: "s"
+ *  
+ * Values send over usart: (Touch Event)
+ *  - We know it's a touch even when commandbuffer[0] == 0x65 (Command/communication id)
+ *  - commandbuffer[1]: Page number
+ *  - commandbuffer[2]: Component id
+ *  - commandbuffer[3]: Event type (0x01 = Press and 0x00 = release)
+ * 
+ * Nextion Color constants: (Can be used when drawing colors)
+ *  - "BLACK" (566 color value: 0)
+ *  - "BLUE" (566 color value: 31)
+ *  - "BROWN" (566 color value: 48192)
+ *  - "GREEN" (566 color value: 2016)
+ *  - "YELLOW" (566 color value: 65504)
+ *  - "RED" (566 color value: 63488)
+ *  - "GRAY" (566 color value: 33840)
+ *  - "WHITE" (566 color value: 65535)
  * 
  */ 
 
@@ -36,7 +55,8 @@ volatile unsigned char waitForInterrupts = 0;
 
 //################################________Commands________############################################
 
-void nextion_init() //!!!
+// Initialize communication with the Nxtion display 
+void nextion_init() 
 {
   uart_init(); //initialize communication with PC - debugging
 	io_redirect(); // redirect input and output to the communication
@@ -45,16 +65,16 @@ void nextion_init() //!!!
 	sei(); //Enable interrupts
 	_delay_ms(1000);
 
-	// Page 3 stuff
+	// Resets component values on page 3
 	nextion_write_value(3, "bt0", 1);
 	nextion_write_value(3, "h0", 0);
 	nextion_write_value(3, "n0", 0);
   printf("page%d.n%d.pco=%ld%c%c%c", 3, 0, 65535L, 0xFF,0xFF,0xFF);
 
-	// Page 2 stuff
+	// Resets component values on page 2
 	nextion_write_value(2, "bt0", 0);
 
-	//printf("page 0%c%c%c",255,255,255);
+	printf("page 0%c%c%c",255,255,255); // Goes to page 0
 }
 
 // Display page on the nextion display
@@ -107,7 +127,7 @@ void nextion_waveform_write_value(int Component_id, int channel_number, int valu
   printf("add %d,%d,%d%c%c%c", Component_id, channel_number-1, value, 0xFF,0xFF,0xFF); // Channel numbers start at 0, so channel 1 = 0
 }
 
-// Change data scaling of component (waveform
+// Change data scaling of component (waveform)
 void nextion_change_data_scaling(int page_number, char* component_name, int value)
 {
   printf("page%d.%s.dis=%d%c%c%c", page_number, component_name, value, 0xFF,0xFF,0xFF);
@@ -172,5 +192,6 @@ ISR(USART_RX_vect)
 	}
 
 }
+
 
 
