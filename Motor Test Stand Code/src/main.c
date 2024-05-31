@@ -23,7 +23,7 @@ typedef struct
   uint16_t mcc_voltage; // Volts [V]
   uint16_t mcc_current; // mili amps [mA]
   uint16_t RPM; // Radians pr.second = (RPM*2*pi)/60
-  uint16_t torque; // Newton Meters [Nm]
+  uint32_t torque; // Newton Meters [Nm]
 } sample_t;
 
 // ################################################################################################### //
@@ -126,7 +126,7 @@ int main(void)
   optocoupler_init();
   GLS_init();
   timer0_init();
-  ADC_init();
+  // ADC_init();
 
   printf("page 0%c%c%c",0xFF,0xFF,0xFF); // Displays page0 on the nextion display.
   nextionPage0();
@@ -442,7 +442,6 @@ void automaticTest() // Gathers and displays information from the optocoupler an
   motor(0); // Turns off motor
   delay_milliseconds(2000);
 
-
   // Load cell setup 
   HX711_tare(10); // tares scale, use no weight
   HX711_set_scale(calibration_factor); //Adjust to this calibration factor
@@ -466,7 +465,7 @@ void automaticTest() // Gathers and displays information from the optocoupler an
 
   int torque_old_min = 0, RPM_old_min = 0;
   uint16_t torque_old_max = eeprom_read_word((uint16_t *)MAX_TORQUE_ADDRESS); // Reads previous max torque from eeprom
-  uint16_t RPM_old_max = eeprom_read_word((uint16_t *)MAX_RPM_ADDRESS); // Reads previous max torque from eeprom
+  uint16_t RPM_old_max = eeprom_read_word((uint16_t *)MAX_RPM_ADDRESS); 
   int new_min = 0;
   int new_max = 480;
   uint16_t temp_max_torque = 0;
@@ -480,13 +479,14 @@ void automaticTest() // Gathers and displays information from the optocoupler an
     if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occured. If yes runs function
 
     // Reads input values
-    data[a].torque = (int)(HX711_get_mean_units(HX711_times)); // Torque reading (Loadcell)
+    data[a].torque = (int)(HX711_get_mean_units(HX711_times)*1000); // Torque reading (Loadcell)
     data[a].RPM = RPMReadValue(); // gives the RPM value; // RPM reading (Optocoupler)
     data[a].mcc_voltage = ((double)v_ref * 100 * (double)read_main_voltage() * 4 / 1024); // calculate the voltage V;
     data[a].mcc_current = ((1.1 * 1000 * (double)read_current_adc() / 1024) / shunt); // calculate the current mA
+    
 
     // Writes digital values to Display
-    nextion_write_value(4, "x1", (int)(HX711_get_mean_units(HX711_times))); // Writes digital value of torque
+    nextion_write_value(4, "x1", (int)(data[a].torque)); // Writes digital value of torque
     nextion_write_value(4, "x0", (int)(data[a].RPM)); // Writes digital value of RPM
     nextion_write_value(4, "x2", (int)(data[a].mcc_voltage)); // Writes digital value of voltage
     nextion_write_value(4, "x3", (int)(data[a].mcc_current)); // Writes digital value of current
@@ -541,25 +541,23 @@ void automaticTest() // Gathers and displays information from the optocoupler an
 
 }
 
-
 void manualTest() // Gathers and displays information from the optocoupler and loadcell
 {
   HX711_tare(10); // tares scale, use no weight
   HX711_set_scale(calibration_factor); //Adjust to this calibration factor
   uint16_t RPM_temp = 0;
-  // uint32_t torque_temp = 0;
-  float torque_temp = 0;
+  uint32_t torque_temp = 0;
 
   while(state_test)
   { 
     if(commandComplete) {nextion_touch_event_detected();} // checks if a touch event has occured. If yes runs function
     
     // Reads input values
-    torque_temp = (HX711_get_mean_units(HX711_times));
+    torque_temp = (HX711_get_mean_units(HX711_times)*1000);
     RPM_temp = RPMReadValue(); // gives the RPM value
 
     // Writes digital values to Display
-    nextion_write_value(2, "x1", (int)(torque_temp*100)); // Writes digital value of torque
+    nextion_write_value(2, "x1", (int)(torque_temp)); // Writes digital value of torque
     nextion_write_value(2, "x0", (int)RPM_temp); // Writes digital value of RPM
 
     if(torque_temp < 0) {torque_temp = 0;}
@@ -575,7 +573,6 @@ void manualTest() // Gathers and displays information from the optocoupler and l
   }
   
 }
-
 
 void trendline_RPM_torque(float *a_p, float *b_p)
 {
@@ -598,7 +595,7 @@ void trendline_RPM_torque(float *a_p, float *b_p)
   *b_p = b;
 
   // Step 3 (write equation on display)
-  printf("%s.txt=\"y = %dx + %d\"%c%c%c", "t7", (int)a, (int)b, 0xFF,0xFF,0xFF);
+  printf("%s.txt=\"y = -%dx + %d\"%c%c%c", "t7", (int)a, (int)b, 0xFF,0xFF,0xFF);
 
 }
 
